@@ -1,7 +1,7 @@
 import  express from 'express';
 import { authenticateToken } from '../controller/jwt-controller.js';
 import { createPost , getAllPosts ,getPost, updatePost, deletePost, likePost, unlikePost,getMyPosts } from '../controller/post-controller.js';
-import { singupUser,loginUser, logoutUser,updateProfilePic, othersProfile,follow }  from '../controller/user-controller.js';
+import { singupUser,loginUser, logoutUser,updateProfilePic, othersProfile,follow,unfollow }  from '../controller/user-controller.js';
 import { newComment ,getComments, deleteComment } from '../controller/comment-controller.js';
 const router = express.Router();
 
@@ -12,6 +12,7 @@ router.post('/logout', logoutUser);
 router.put('/updatepic',authenticateToken,updateProfilePic)
 router.get('/user/:id', authenticateToken, othersProfile)
 router.put('/follow',authenticateToken,follow)
+router.put('/unfollow',authenticateToken,unfollow)
 
 
 // Blog routs

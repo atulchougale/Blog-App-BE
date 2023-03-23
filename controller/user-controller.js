@@ -117,24 +117,47 @@ export const othersProfile = async (request, response) => {
 // follow the other 
 
 
-export const follow = async (request,response)=>{
-    User.findByIdAndUpdate(request.body.followId,{
-        $push:{followers:request.user._id}
-    },{
-        new:true
-    },(err,result)=>{
-        if(err){
-            return response.status(422).json({error:err})
-        }
-      User.findByIdAndUpdate(request.user._id,{
-          $push:{following:request.body.followId}
-          
-      },{new:true}).select("-password").then(result=>{
-          response.json(result)
-      }).catch(err=>{
-          return response.status(422).json({error:err})
-      })
-
+export const follow = async (request, response) => {
+    try {
+      const userToFollow = await User.findByIdAndUpdate(
+        request.body.followId,
+        { $push: { followers: request.user._id } },
+        { new: true }
+      );
+  
+      const updatedUser = await User.findByIdAndUpdate(
+        request.user._id,
+        { $push: { following: request.body.followId } },
+        { new: true }
+      ).select("-password");
+  
+      response.json(updatedUser);
+    } catch (error) {
+      response.status(422).json({ error: error.message });
     }
-    )
-}
+  };
+  
+
+
+
+  
+export const unfollow = async (request, response) => {
+    try {
+      const userToFollow = await User.findByIdAndUpdate(
+        request.body.followId,
+        { $pull: { followers: request.user._id } },
+        { new: true }
+      );
+  
+      const updatedUser = await User.findByIdAndUpdate(
+        request.user._id,
+        { $pull: { following: request.body.followId } },
+        { new: true }
+      ).select("-password");
+  
+      response.json(updatedUser);
+    } catch (error) {
+      response.status(422).json({ error: error.message });
+    }
+  };
+  
